@@ -261,7 +261,9 @@
     .song-links::-webkit-scrollbar { display: none; }
 
     .platform-next {
-      display: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: absolute;
       top: 12px;
       right: 12px;
@@ -372,11 +374,13 @@
       color: var(--text-muted);
     }
 
-    /* Responsive tweaks */
-    @media (max-width: 700px) {
-      .platform-next { display: block; }
-      .song-header { padding-right: 52px; }
-      .song-title { padding-right: 24px; }
+    /* Platform arrow: visible on PC and mobile */
+    .song-header {
+      padding-right: 58px;
+    }
+
+    .song-title {
+      padding-right: 24px;
     }
 
     @media (max-width: 380px) {
@@ -455,7 +459,16 @@
             </div>
           </div>
         </div>
-        <div class="embed-wrap"><div class="spotify-embed" data-url="https://open.spotify.com/embed/track/64qZGlLMhgpwejsY9APeML?utm_source=generator&theme=0"></div></div>
+        <div class="embed-wrap">
+          <iframe
+            src="https://open.spotify.com/embed/track/64qZGlLMhgpwejsY9APeML?utm_source=generator&theme=0"
+            width="100%"
+            height="152"
+            frameborder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="Reproductor de Spotify"></iframe>
+        </div>
       </article>
 
       <!-- Sin visto -->
@@ -481,7 +494,16 @@
             </div>
           </div>
         </div>
-        <div class="embed-wrap"><div class="spotify-embed" data-url="https://open.spotify.com/embed/track/1ygmGZX5sLkKPO25b9DgUI?utm_source=generator&theme=0"></div></div>
+        <div class="embed-wrap">
+          <iframe
+            src="https://open.spotify.com/embed/track/1ygmGZX5sLkKPO25b9DgUI?utm_source=generator&theme=0"
+            width="100%"
+            height="152"
+            frameborder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="Reproductor de Spotify"></iframe>
+        </div>
       </article>
 
       <!-- TÚ BOCA -->
@@ -507,7 +529,16 @@
             </div>
           </div>
         </div>
-        <div class="embed-wrap"><div class="spotify-embed" data-url="https://open.spotify.com/embed/track/3lsRE1o7hunAaEQGN4AEXS?utm_source=generator&theme=0"></div></div>
+        <div class="embed-wrap">
+          <iframe
+            src="https://open.spotify.com/embed/track/3lsRE1o7hunAaEQGN4AEXS?utm_source=generator&theme=0"
+            width="100%"
+            height="152"
+            frameborder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            title="Reproductor de Spotify"></iframe>
+        </div>
       </article>
 
     </div>
@@ -535,37 +566,7 @@
       }
     });
 
-    // Spotify iFrame API: mini reproductor + un solo preview activo.
-    const spotifyEmbeds = Array.from(document.querySelectorAll('.spotify-embed'));
-    const spotifyPlayers = [];
-
-    window.onSpotifyIframeApiReady = (IFrameAPI) => {
-      spotifyEmbeds.forEach((element) => {
-        try {
-          IFrameAPI.createController(element, {
-            width: '100%',
-            height: '152',
-            url: element.dataset.url
-          }, (controller) => {
-            spotifyPlayers.push(controller);
-            controller.addListener('playback_started', () => {
-              spotifyPlayers.forEach(other => {
-                if (other !== controller) {
-                  try { other.pause(); } catch (e) {}
-                }
-              });
-            });
-          });
-        } catch (e) {}
-      });
-    };
-
-    const spotifyApiScript = document.createElement('script');
-    spotifyApiScript.src = 'https://open.spotify.com/embed/iframe-api/v1';
-    spotifyApiScript.async = true;
-    document.body.appendChild(spotifyApiScript);
-
-    async function loadCover(trackId, imgId) {
+    // Spotify players use direct embeds for reliable loading.\n    async function loadCover(trackId, imgId) {
       try {
         const res = await fetch(`https://open.spotify.com/oembed?url=https://open.spotify.com/track/${trackId}`);
         const data = await res.json();
